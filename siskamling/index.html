@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>SISKAMLING</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="phone" id="phone">
+
+    <!-- Status bar -->
+    <div class="statusbar">
+      <span id="clock">08.14</span>
+      <span>Wi-Fi 100%</span>
+    </div>
+
+    <main class="screens">
+
+      <!-- 1. BERANDA -->
+      <section class="screen active" id="screen-home">
+        <header class="head">
+          <h1>Pintu depan</h1>
+          <p class="conn"><i class="dot" id="connDot"></i><span id="connText">ESP32 terhubung</span></p>
+        </header>
+
+        <button class="siren-banner" id="sirenBanner" hidden>
+          Sirine sedang menyala. <b>Matikan</b>
+        </button>
+
+        <div class="dist-card">
+          <p class="dist-label">Jarak objek saat ini</p>
+          <div class="dist-value"><span id="distNum">--</span><small>cm</small></div>
+          <span class="badge safe" id="levelBadge">Aman</span>
+          <div class="scale">
+            <div class="bar">
+              <i class="seg r"></i><i class="seg y"></i><i class="seg g"></i>
+              <b class="marker" id="marker"></b>
+            </div>
+            <div class="ticks">
+              <span style="left:0">0</span>
+              <span style="left:10%">10</span>
+              <span style="left:50%">50</span>
+              <span style="right:0">100<br />cm</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <strong>Sistem pengawasan</strong>
+            <small>Sama dengan tombol di alat</small>
+          </div>
+          <label class="switch"><input type="checkbox" id="armedToggle" /><span></span></label>
+        </div>
+
+        <h3 class="section">Terakhir terdeteksi</h3>
+        <ul class="list" id="recentList"></ul>
+      </section>
+
+      <!-- 2. NOTIFIKASI BAHAYA -->
+      <section class="screen" id="screen-alert">
+        <div class="alert-head">
+          <p id="alertWhen">Pintu depan, hari ini 07.52</p>
+          <h2>Ada objek sangat dekat</h2>
+          <p id="alertDetail">Jarak terbaca 4 cm, di bawah batas 10 cm</p>
+        </div>
+        <div class="alert-body">
+          <div class="photo" id="alertPhoto"></div>
+          <div class="siren-row">
+            <div>
+              <strong>Sirine</strong>
+              <small id="sirenNote">Menyala otomatis di bawah 10 cm</small>
+            </div>
+            <span class="pill" id="sirenPill">Menyala</span>
+          </div>
+          <button class="btn primary" id="sirenOff">Matikan sirine</button>
+          <button class="btn secondary" id="toHistory">Lihat di riwayat</button>
+        </div>
+      </section>
+
+      <!-- 3. RIWAYAT -->
+      <section class="screen" id="screen-history">
+        <header class="head"><h1>Riwayat kejadian</h1></header>
+        <div class="chips" id="chips">
+          <button class="chip active" data-level="">Semua</button>
+          <button class="chip" data-level="bahaya">Bahaya</button>
+          <button class="chip" data-level="waspada">Waspada</button>
+          <button class="chip" data-level="aman">Aman</button>
+        </div>
+        <div id="historyList"></div>
+      </section>
+
+      <!-- 4. PENGATURAN -->
+      <section class="screen" id="screen-settings">
+        <header class="head"><h1>Pengaturan</h1></header>
+
+        <h3 class="group">Perangkat</h3>
+        <ul class="kv">
+          <li><span><i class="dot" id="dEsp"></i>ESP32</span><b id="vEsp">Terhubung</b></li>
+          <li><span><i class="dot" id="dSensor"></i>Sensor jarak HC-SR04</span><b id="vSensor">Normal</b></li>
+          <li><span><i class="dot" id="dCam"></i>Kamera ESP32-CAM</span><b id="vCam">Belum terhubung</b></li>
+        </ul>
+
+        <h3 class="group">Batas jarak</h3>
+        <ul class="kv">
+          <li><span><i class="sq r"></i>Bahaya, di bawah</span><b id="tDanger">10 cm</b></li>
+          <li><span><i class="sq y"></i>Waspada, sampai</span><b id="tWarn">50 cm</b></li>
+          <li><span><i class="sq g"></i>Aman, sampai</span><b id="tSafe">100 cm</b></li>
+        </ul>
+
+        <h3 class="group">Pemberitahuan</h3>
+        <ul class="kv toggles">
+          <li><span>Notifikasi di ponsel</span><label class="switch"><input type="checkbox" data-key="notif_phone" /><span></span></label></li>
+          <li><span>Sirine otomatis</span><label class="switch"><input type="checkbox" data-key="siren_auto" /><span></span></label></li>
+          <li><span>Simpan foto ke riwayat</span><label class="switch"><input type="checkbox" data-key="save_photo" /><span></span></label></li>
+        </ul>
+      </section>
+    </main>
+
+    <!-- Navigasi bawah -->
+    <nav class="nav" id="nav">
+      <button class="active" data-tab="home">
+        <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+        <span>Beranda</span>
+      </button>
+      <button data-tab="history">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <span>Riwayat</span>
+      </button>
+      <button data-tab="settings">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        <span>Pengaturan</span>
+      </button>
+    </nav>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
